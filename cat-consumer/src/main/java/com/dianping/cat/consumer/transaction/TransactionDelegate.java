@@ -18,13 +18,6 @@
  */
 package com.dianping.cat.consumer.transaction;
 
-import java.util.Date;
-import java.util.Map;
-
-import org.unidal.lookup.annotation.Inject;
-import org.unidal.lookup.annotation.Named;
-
-import com.dianping.cat.Cat;
 import com.dianping.cat.Constants;
 import com.dianping.cat.config.AtomicMessageConfigManager;
 import com.dianping.cat.config.server.ServerConfigManager;
@@ -37,8 +30,11 @@ import com.dianping.cat.consumer.transaction.model.transform.DefaultSaxParser;
 import com.dianping.cat.report.ReportDelegate;
 import com.dianping.cat.task.TaskManager;
 import com.dianping.cat.task.TaskManager.TaskProlicy;
+import org.unidal.lookup.annotation.Inject;
+import org.unidal.lookup.annotation.Named;
 
-import static com.dianping.cat.Constants.ALL;
+import java.util.Date;
+import java.util.Map;
 
 @Named(type = ReportDelegate.class, value = TransactionAnalyzer.ID)
 public class TransactionDelegate implements ReportDelegate<TransactionReport> {
@@ -66,11 +62,6 @@ public class TransactionDelegate implements ReportDelegate<TransactionReport> {
 
 	@Override
 	public void beforeSave(Map<String, TransactionReport> reports) {
-		//		if (reports.size() > 0) {
-		//			TransactionReport all = createAggregatedReport(reports);
-		//
-		//			reports.put(all.getDomain(), all);
-		//		}
 	}
 
 	@Override
@@ -89,38 +80,13 @@ public class TransactionDelegate implements ReportDelegate<TransactionReport> {
 		return report.toString();
 	}
 
-	public TransactionReport createAggregatedReport(Map<String, TransactionReport> reports) {
-		if (reports.size() > 0) {
-			TransactionReport first = reports.values().iterator().next();
-			TransactionReport all = makeReport(ALL, first.getStartTime().getTime(), Constants.HOUR);
-			TransactionReportTypeAggregator visitor = new TransactionReportTypeAggregator(all, m_transactionManager);
-
-			try {
-				for (TransactionReport report : reports.values()) {
-					String domain = report.getDomain();
-
-					if (!domain.equals(Constants.ALL)) {
-						all.getIps().add(domain);
-
-						visitor.visitTransactionReport(report);
-					}
-				}
-			} catch (Exception e) {
-				Cat.logError(e);
-			}
-			return all;
-		} else {
-			return new TransactionReport(ALL);
-		}
-	}
-
 	@Override
 	public boolean createHourlyTask(TransactionReport report) {
 		String domain = report.getDomain();
 
 		if (domain.equals(Constants.ALL) || m_configManager.validateDomain(domain)) {
-			return m_taskManager
-									.createTask(report.getStartTime(), domain, TransactionAnalyzer.ID, TaskProlicy.ALL_EXCLUED_HOURLY);
+			return m_taskManager.createTask(report.getStartTime(), domain, TransactionAnalyzer.ID,
+			      TaskProlicy.ALL_EXCLUED_HOURLY);
 		} else {
 			return true;
 		}
@@ -156,8 +122,6 @@ public class TransactionDelegate implements ReportDelegate<TransactionReport> {
 
 	@Override
 	public TransactionReport parseXml(String xml) throws Exception {
-		TransactionReport report = DefaultSaxParser.parse(xml);
-
-		return report;
+		return DefaultSaxParser.parse(xml);
 	}
 }

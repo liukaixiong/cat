@@ -62,7 +62,7 @@ CATALINA_OPTS="$CATALINA_OPTS -server -Djava.awt.headless=true -Xms25G -Xmx25G -
 ### **步骤3：** 配置/data/appdatas/cat/client.xml
 
 -	此配置文件的作用是所有的客户端都需要一个地址指向CAT的服务端，比如CAT服务端有三个IP，10.1.1.1，10.1.1.2，10.1.1.3，2280是默认的CAT服务端接受数据的端口，不允许修改，http-port是Tomcat启动的端口，默认是8080，建议使用默认端口
--	此文件可以通过运维统一进行部署和维护，比如使用puppert等运维工具
+-	此文件可以通过运维统一进行部署和维护，比如使用puppet等运维工具
 -	不同环境这份文件不一样，比如区分prod环境以及test环境，在美团点评内部一共是2套环境的CAT，一份是生产环境，一份是测试环境
 	
 ```   
@@ -238,7 +238,10 @@ storage模型: 定义数据存储配置信息
 
 ### **步骤10：** 本地开发环境 CAT运行
 
-1.	请按照如上部署/data/环境目录，数据库配置client.xml, datasources.xml, server.xml这三个配置文件，注意server.xml里面的节点角色，job-machine&alarm-machine都可以配置为true
+1.	请参照上述步骤，进行如下配置：
+  - 配置/data/appdatas/cat/client.xml文件
+  - 配置/data/appdatas/cat/datasources.xml文件
+  - 服务器配置 http://{ip:port}/cat/s/config?op=serverConfigUpdate （注意本地节点的角色，job-machine&alarm-machine都可以配置为true，以便于debug）
 2.	根据ide的类型，在cat目录中执行 mvn eclipse:eclipse 或者 mvn idea:idea，此步骤会生成一些代码文件，直接导入到工程会发现找不到类
 3.	如果ide是eclipse，将源码以普通项目到入eclipse中，注意不要以maven项目导入工程
 4.	启动方式：
@@ -247,3 +250,46 @@ storage模型: 定义数据存储配置信息
   - test case启动：运行com.dianping.cat.TestServer 这个类，即可启动cat服务器；注意：执行的是startWebApp()这个test case
   
 5.	这里和集群版本唯一区别就是服务端部署单节点，client.xml, server.xml以及路由地址配置为单台即可
+
+## Docker部署
+### 说明
+默认的运行方式是集成了一个mysql镜像，可以修改为自己的mysql的详细配置。默认运行的mysql服务，将mysql数据挂载到了`docker/mysql/volume`中。
+### 运行（从镜像运行）
+
+
+    cd docker
+    docker-compose up # --build
+
+#### 运行（从源代码运行）
+修改docker-compose.yml文件，注释`image`部分，启用`build`部分
+
+        ######## build from Dockerfile ###########
+        build:
+          context: ../
+          dockerfile: ./docker/Dockerfile
+        ######## End -> build from Dockerfile ###########
+    
+        ######## build from images ###############
+    # https://hub.docker.com/r/blackdog1987/cat/
+    #    image: blackdog1987/cat:3.0.0-alpha
+        ######## End ->  build from images ###############
+
+
+注意：第一次运行以后，数据库中没有表结构，需要通过下面的命令创建表：
+
+    docker exec <container_id> bash -c "mysql -uroot -Dcat < /init.sql"
+注意，<container_id>需要替换为容器的真实id。通过`docker ps`可以查看到cat的容器id
+
+### 依赖
+1. datasources.xml
+    - CAT数据库配置，默认配置是mysql镜像，可以修改为自己的
+2. docker-compose.yml
+    - 通过docker-compose启动的编排文件，文件中包含cat和mysql。可以屏蔽掉mysql的部分，并且修改cat的环境变量，改为真实的mysql连接信息。
+3. Dockerfile
+    - docker镜像构建文件，默认通过tomcat的官方镜像。tomcat8、jre8、alpine。可以自行选择需要的
+4. cat-home/target/*.war
+    - 构建脚本参考 "步骤6： war打包"
+5. client.xml
+    - 不是必须的，配置client以后，cat会将运行的本机也作为一个监控端。可以在`docker-compose.yml`中屏蔽掉
+6. datasources.sh
+    - 辅助脚本，脚本作用时修改`datasources.xml`，使用环境变量中制定的mysql连接信息。（通过sed命令替换）
