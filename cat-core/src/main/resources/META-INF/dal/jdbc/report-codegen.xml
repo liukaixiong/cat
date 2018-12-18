@@ -443,5 +443,56 @@
       </query>
     </query-defs>
   </entity>
+
+
+
+  <entity name="top-day" table="top_day" alias="top">
+    <member name="id" field="id" value-type="int" length="10" nullable="false" key="true" auto-increment="true" />
+    <member name="domain" field="domain" value-type="String" length="128" />
+    <member name="data-time" field="data_time" value-type="Date" nullable="false" />
+    <member name="data-json" field="data_json" value-type="String" length="65535" />
+    <member name="type" field="type" value-type="String" length="128" />
+    <member name="index-data" field="index_data" value-type="String" length="128" />
+    <member name="create-time" field="create_time" value-type="Date" />
+    <var name="key-id" value-type="int" key-member="id" />
+    <primary-key name="PRIMARY" members="id" />
+    <readsets>
+      <readset name="FULL" all="true" />
+    </readsets>
+    <updatesets>
+      <updateset name="FULL" all="true" />
+    </updatesets>
+    <query-defs>
+      <query name="find-by-PK" type="SELECT">
+        <param name="key-id" />
+        <statement><![CDATA[SELECT <FIELDS/>
+        FROM <TABLE/>
+        WHERE <FIELD name='id'/> = ${key-id}]]></statement>
+      </query>
+      <query name="insert" type="INSERT">
+        <statement><![CDATA[INSERT INTO <TABLE/>(<FIELDS/>)
+        VALUES(<VALUES/>)]]></statement>
+      </query>
+      <query name="update-by-PK" type="UPDATE">
+        <param name="key-id" />
+        <statement><![CDATA[UPDATE <TABLE/>
+        SET <FIELDS/>
+        WHERE <FIELD name='id'/> = ${key-id}]]></statement>
+      </query>
+      <query name="delete-by-PK" type="DELETE">
+        <param name="key-id" />
+        <statement><![CDATA[DELETE FROM <TABLE/>
+        WHERE <FIELD name='id'/> = ${key-id}]]></statement>
+      </query>
+      <query name="findByList" type="SELECT" multiple="true" >
+        <param name="type" />
+        <param name="data-time" />
+        <param name="index-data" />
+        <statement><![CDATA[SELECT <FIELDS/>
+        FROM <TABLE/>
+        WHERE <FIELD name='type'/> = ${type} AND  <FIELD name='data-time'/> = ${data-time} AND  <FIELD name='index-data'/> = ${index-data} ]]></statement>
+      </query>
+    </query-defs>
+  </entity>
 </entities>
 

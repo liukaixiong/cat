@@ -18,18 +18,17 @@
  */
 package com.dianping.cat.report.analyzer;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
-
-import junit.framework.Assert;
-import org.junit.Test;
-import org.unidal.lookup.ComponentTestCase;
-
 import com.dianping.cat.Constants;
 import com.dianping.cat.core.dal.Task;
 import com.dianping.cat.home.router.entity.RouterConfig;
 import com.dianping.cat.report.task.ReportFacade;
 import com.dianping.cat.system.page.router.service.RouterConfigService;
+import junit.framework.Assert;
+import org.junit.Test;
+import org.unidal.lookup.ComponentTestCase;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 public class RouterBuilderTest extends ComponentTestCase {
 
@@ -37,9 +36,9 @@ public class RouterBuilderTest extends ComponentTestCase {
 
 	public String day2 = "2014-11-09";
 
-	public String day3 = "2014-11-08";
+	public String day3 = "2018-11-26";
 
-	public String day4 = "2014-11-07";
+	public String day4 = "2018-11-27";
 
 	@Test
 	public void test() throws Exception {

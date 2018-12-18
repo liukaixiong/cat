@@ -3,8 +3,8 @@
 		<properties>
 			<property name="local-mode" value="false" />
 			<property name="job-machine" value="false" />
-			<property name="send-machine" value="false" />
-			<property name="alert-machine" value="false" />
+			<property name="send-machine" value="true" />
+			<property name="alert-machine" value="true" />
 			<property name="hdfs-machine" value="true" />
 			<property name="remote-servers" value="127.0.0.1:2281" />
 			<property name="ldap" value="ldap://ldap.dianpingoa.com/DC=dianpingoa,DC=com" />

@@ -65,6 +65,12 @@ public enum ReportPage implements Page {
 
 	TOP("top", "top", "Top", "Top", true),
 
+	TOPHOUR("tophour", "tophour", "TopHour", "TopHour", true),
+
+	TOPTRANSACTION("toptransaction", "toptransaction", "TopTransaction", "TopTransaction", true),
+
+	TOPHEARTBEAT("topheartbeat", "topheartbeat", "topheartbeat", "topheartbeat", true),
+
 	BROWSER("browser", "browser", "Browser", "Browser", true),
 
 	SERVER("server", "server", "Server", "Server", true),

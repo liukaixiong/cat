@@ -19,7 +19,10 @@
 <c:if test="${ empty model.message}">
 	<h3 class="text-center text-success">CAT服务端正常</h3>
 </c:if>
-  
+<div>
+	查询的时间维度 : ${w:format(model.topMetric.start,'yyyy-MM-dd HH:mm:ss')}
+	- ${w:format(model.topMetric.end,'yyyy-MM-dd HH:mm:ss')}
+</div>
  <c:set var="date" value="${w:format(model.topReport.startTime,'yyyyMMddHH')}"/>
  <c:forEach var="item" items="${model.topMetric.error.result}"  varStatus="itemStatus">
       <table  class="smallTable" style="float:left" border=1>  

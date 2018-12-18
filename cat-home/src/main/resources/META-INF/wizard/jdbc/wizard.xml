@@ -19,6 +19,7 @@
          <table name="user_define_rule"/>
          <table name="metric_screen"/>
          <table name="metric_graph"/>
+         <table name="top_day"/>
       </group>
    </jdbc>
 </wizard>

@@ -361,6 +361,15 @@
 			</configuration>
 		</component>
 		<component>
+			<role>org.unidal.dal.jdbc.mapping.TableProvider</role>
+			<role-hint>top-day</role-hint>
+			<implementation>org.unidal.dal.jdbc.mapping.SimpleTableProvider</implementation>
+			<configuration>
+				<physical-table-name>top_day</physical-table-name>
+				<data-source-name>cat</data-source-name>
+			</configuration>
+		</component>
+		<component>
 			<role>com.dianping.cat.core.dal.DailyReportContentDao</role>
 			<implementation>com.dianping.cat.core.dal.DailyReportContentDao</implementation>
 			<requirements>
@@ -453,6 +462,15 @@
 		<component>
 			<role>com.dianping.cat.core.dal.WeeklyReportDao</role>
 			<implementation>com.dianping.cat.core.dal.WeeklyReportDao</implementation>
+			<requirements>
+				<requirement>
+					<role>org.unidal.dal.jdbc.QueryEngine</role>
+				</requirement>
+			</requirements>
+		</component>
+		<component>
+			<role>com.dianping.cat.core.dal.TopDayDao</role>
+			<implementation>com.dianping.cat.core.dal.TopDayDao</implementation>
 			<requirements>
 				<requirement>
 					<role>org.unidal.dal.jdbc.QueryEngine</role>
@@ -559,6 +577,15 @@
 			</configuration>
 		</component>
 		<component>
+			<role>org.unidal.dal.jdbc.mapping.TableProvider</role>
+			<role-hint>top-day</role-hint>
+			<implementation>org.unidal.dal.jdbc.mapping.SimpleTableProvider</implementation>
+			<configuration>
+				<physical-table-name>top_day</physical-table-name>
+				<data-source-name>cat</data-source-name>
+			</configuration>
+		</component>
+		<component>
 			<role>com.dianping.cat.core.dal.DailyReportContentDao</role>
 			<implementation>com.dianping.cat.core.dal.DailyReportContentDao</implementation>
 			<requirements>
@@ -651,6 +678,15 @@
 		<component>
 			<role>com.dianping.cat.core.dal.WeeklyReportDao</role>
 			<implementation>com.dianping.cat.core.dal.WeeklyReportDao</implementation>
+			<requirements>
+				<requirement>
+					<role>org.unidal.dal.jdbc.QueryEngine</role>
+				</requirement>
+			</requirements>
+		</component>
+		<component>
+			<role>com.dianping.cat.core.dal.TopDayDao</role>
+			<implementation>com.dianping.cat.core.dal.TopDayDao</implementation>
 			<requirements>
 				<requirement>
 					<role>org.unidal.dal.jdbc.QueryEngine</role>

@@ -18,16 +18,6 @@
  */
 package com.dianping.cat.report.page.heartbeat;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import org.unidal.lookup.annotation.Inject;
-
 import com.dianping.cat.consumer.heartbeat.model.entity.Extension;
 import com.dianping.cat.consumer.heartbeat.model.entity.HeartbeatReport;
 import com.dianping.cat.consumer.heartbeat.model.entity.Machine;
@@ -37,6 +27,9 @@ import com.dianping.cat.helper.TimeHelper;
 import com.dianping.cat.report.graph.LineChart;
 import com.dianping.cat.report.page.heartbeat.config.HeartbeatDisplayPolicyManager;
 import com.dianping.cat.report.page.heartbeat.service.HeartbeatReportService;
+import org.unidal.lookup.annotation.Inject;
+
+import java.util.*;
 
 public class HistoryGraphs {
 
@@ -136,6 +129,7 @@ public class HistoryGraphs {
 		item.addSubTitle(title);
 		item.setStep(TimeHelper.ONE_MINUTE);
 		double[] activeThread = graphData.get(key);
+
 		item.addValue(activeThread);
 		return item;
 	}

@@ -18,17 +18,6 @@
  */
 package com.dianping.cat.report.page.dependency;
 
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-
 import com.dianping.cat.consumer.top.model.entity.Domain;
 import com.dianping.cat.consumer.top.model.entity.Error;
 import com.dianping.cat.consumer.top.model.entity.Segment;
@@ -37,6 +26,10 @@ import com.dianping.cat.consumer.top.model.transform.BaseVisitor;
 import com.dianping.cat.helper.TimeHelper;
 import com.dianping.cat.home.exception.entity.ExceptionLimit;
 import com.dianping.cat.report.alert.exception.ExceptionRuleConfigManager;
+
+import java.text.SimpleDateFormat;
+import java.util.*;
+import java.util.Map.Entry;
 
 public class TopMetric extends BaseVisitor {
 
@@ -125,6 +118,14 @@ public class TopMetric extends BaseVisitor {
 			m_error.addIndex(minuteStr, m_currentDomain, segment.getError());
 			super.visitSegment(segment);
 		}
+	}
+
+	public Date getEnd() {
+		return m_end;
+	}
+
+	public Date getStart() {
+		return m_start;
 	}
 
 	@Override

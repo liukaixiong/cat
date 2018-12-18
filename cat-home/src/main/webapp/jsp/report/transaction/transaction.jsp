@@ -48,7 +48,7 @@
 </script>
 <table class="groups">
 	<tr class="left">
-		<th> 
+		<th>
 			<c:forEach var="group" items="${model.groups}">
 	   	  		&nbsp;[&nbsp;
 	   	  			<a href="?op=groupReport&domain=${model.domain}&date=${model.date}&group=${group}&type=${payload.encodedType}">${group}</a>
@@ -84,7 +84,7 @@
 					<td>&nbsp;${w:format(e.failPercent/100,'0.0000%')}</td>
 					<td><a href="/cat/r/m/${empty e.failMessageUrl ? e.successMessageUrl : e.failMessageUrl}?domain=${model.domain}">Log View</a></td>
 					<td>${w:format(e.min,'###,##0.#')}</td>
-					<td>${w:format(e.max,'###,##0.#')}</td>
+					<td><a href="/cat/r/m/${e.longestMessageUrl}">${w:format(e.max,'###,##0.#')}</a></td>
 					<td>${w:format(e.avg,'###,##0.0')}</td>
 					<td>${w:format(e.line95Value,'###,##0.0')}</td>
 					<td>${w:format(e.line99Value,'###,##0.0')}</td>
@@ -123,7 +123,7 @@
 					<c:choose>
 						<c:when test="${status.index > 0}">
 							<td class="left longText" style="white-space:normal">
-							<a href="?op=graphs&domain=${report.domain}&date=${model.date}&ip=${model.ipAddress}&type=${payload.encodedType}&name=${item.name}" class="graph_link" data-status="${status.index}">[:: show ::]</a> 
+							<a href="?op=graphs&domain=${report.domain}&date=${model.date}&ip=${model.ipAddress}&type=${payload.encodedType}&name=${item.name}" class="graph_link" data-status="${status.index}">[:: show ::]</a>
 							&nbsp;&nbsp;${w:shorten(e.id, 120)}</td>
 						</c:when>
 						<c:otherwise>
@@ -135,7 +135,7 @@
 					<td>&nbsp;${w:format(e.failPercent/100,'0.0000%')}</td>
 					<td class="center"><a href="/cat/r/m/${empty e.failMessageUrl ? e.successMessageUrl : e.failMessageUrl}?domain=${model.domain}">Log View</a></td>
 					<td>${w:format(e.min,'###,##0.#')}</td>
-					<td>${w:format(e.max,'###,##0.#')}</td>
+					<td><a href="/cat/r/m/${e.longestMessageUrl}">${w:format(e.max,'###,##0.#')}</a></td>
 					<td>${w:format(e.avg,'###,##0.0')}</td>
 					<c:choose>
 						<c:when test="${status.index > 0}">

@@ -18,16 +18,15 @@
  */
 package com.dianping.cat.report.alert.sender;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import com.dianping.cat.alarm.spi.AlertChannel;
+import com.dianping.cat.alarm.spi.sender.SendMessageEntity;
+import com.dianping.cat.alarm.spi.sender.SenderManager;
 import org.junit.Before;
 import org.junit.Test;
 import org.unidal.lookup.ComponentTestCase;
 
-import com.dianping.cat.alarm.spi.AlertChannel;
-import com.dianping.cat.alarm.spi.sender.SendMessageEntity;
-import com.dianping.cat.alarm.spi.sender.SenderManager;
+import java.util.ArrayList;
+import java.util.List;
 
 public class SenderManagerTest extends ComponentTestCase {
 
@@ -41,9 +40,9 @@ public class SenderManagerTest extends ComponentTestCase {
 		SenderManager manager = lookup(SenderManager.class);
 		List<String> receivers = new ArrayList<String>();
 
-		receivers.add("yong.you@dianping.com");
+		receivers.add("liukx@elab-plus.com");
 		SendMessageEntity message = new SendMessageEntity("Test", "test", "title", "content", receivers);
-		boolean result = manager.sendAlert(AlertChannel.MAIL, message);
+		boolean result = manager.sendAlert(AlertChannel.WEIXIN, message);
 
 		System.out.println(result);
 	}
