@@ -19,6 +19,7 @@
 package com.dianping.cat.report.page.toptransaction;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.dianping.cat.Constants;
 import com.dianping.cat.consumer.transaction.TransactionAnalyzer;
 import com.dianping.cat.consumer.transaction.model.entity.Machine;
@@ -41,6 +42,7 @@ import com.dianping.cat.report.page.transaction.service.TransactionReportService
 import com.dianping.cat.report.page.transaction.transform.DistributionDetailVisitor;
 import com.dianping.cat.report.page.transaction.transform.PieGraphChartVisitor;
 import com.dianping.cat.report.page.transaction.transform.TransactionMergeHelper;
+import com.dianping.cat.report.page.utils.JsonResponseUtils;
 import com.dianping.cat.report.service.ModelRequest;
 import com.dianping.cat.report.service.ModelResponse;
 import com.dianping.cat.report.service.ModelService;
@@ -73,6 +75,7 @@ public class Handler implements PageHandler<Context> {
 
     @Inject
     private XmlViewer m_xmlViewer;
+
 
     @Inject
     private TransactionReportService m_reportService;
@@ -231,9 +234,12 @@ public class Handler implements PageHandler<Context> {
 
         buildTransactionTypeList(model, payload);
 
-        if (payload.isXml())
 
-        {
+        if (Action.TOP_BATCH_DATA.getName().equals(payload.getAction().name())) {
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("success", true);
+            JsonResponseUtils.view(ctx, jsonObject);
+        } else if (payload.isXml()) {
             m_xmlViewer.view(ctx, model);
         } else
 
@@ -279,7 +285,7 @@ public class Handler implements PageHandler<Context> {
                     if (StringUtils.isNotEmpty(queryName) && !domain.startsWith(queryName)) {
                         continue;
                     }
-                    System.out.println("开始处理 : " + domain);
+                    System.out.println("process project : " + domain);
                     TransactionType transactionType = new TransactionType();
                     payload.setDomain(domain);
                     switch (action) {
@@ -295,7 +301,7 @@ public class Handler implements PageHandler<Context> {
                             if (report != null) {
                                 model.setReport(report);
                                 transactionType = getReportData(model, type, report);
-                                topTransactionReportService.insertTopDay(transactionType, domain, payload.getHistoryStartDate(), "interfaces");
+                                topTransactionReportService.insertTopDay(transactionType, domain, payload.getHistoryStartDate(), payload.getType());
                             }
                             break;
                         case HISTORY_GRAPH:

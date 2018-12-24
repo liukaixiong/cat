@@ -4,99 +4,39 @@
  [![GitHub stars](https://img.shields.io/github/stars/dianping/cat.svg?style=social&label=Star&)](https://github.com/dianping/cat/stargazers)
  [![GitHub forks](https://img.shields.io/github/forks/dianping/cat.svg?style=social&label=Fork&)](https://github.com/dianping/cat/fork)
 
-### CAT 简介 
+**接入手册可以直接去CAT的主页去查看**
 
-- CAT 是基于 Java 开发的实时应用监控平台，为美团点评提供了全面的实时监控告警服务。
-- CAT 作为服务端项目基础组件，提供了 Java, C/C++, Node.js, Python, Go 等多语言客户端，已经在美团点评的基础架构中间件框架（MVC框架，RPC框架，数据库框架，缓存框架等，消息队列，配置系统等）深度集成，为美团点评各业务线提供系统丰富的性能指标、健康状况、实时告警等。
-- CAT 很大的优势是它是一个实时系统，CAT 大部分系统是分钟级统计，但是从数据生成到服务端处理结束是秒级别，秒级定义是48分钟40秒，基本上看到48分钟38秒数据，整体报表的统计粒度是分钟级；第二个优势，监控数据是全量统计，客户端预计算；链路数据是采样计算。
+### CAT 拓展 
+## 报表
+这个报表功能只是为了能够将所有项目能够根据CAT现有的数据做了一次汇总。  
+目的是为了当项目很多的情况下，有针对性的根据当前构建的所有报表来确定哪些项目需要我去关注。
+### 小时汇总报表
+![image.png](https://upload-images.jianshu.io/upload_images/6370985-00df3f65460bc523.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
 
-### Cat 产品价值
+> 这里主要是汇总了所有项目这一个小时的异常情况，并且将异常进行划分。
 
-- 减少故障发现时间
-- 降低故障定位成本
-- 辅助应用程序优化
 
-### Cat 优势
+**稍微提一下这个和CAT本身的Dashboard有何区别?**  
+其实CAT的这个报表的纬度是八分钟，并不是一个小时之内，需要用户自己根据选择分钟才能看到当前分钟和前八分钟的异常情况。
 
-- 实时处理：信息的价值会随时间锐减，尤其是事故处理过程中
-- 全量数据：全量采集指标数据，便于深度分析故障案例
-- 高可用：故障的还原与问题定位，需要高可用监控来支撑
-- 故障容忍：故障不影响业务正常运转、对业务透明
-- 高吞吐：海量监控数据的收集，需要高吞吐能力做保证
-- 可扩展：支持分布式、跨 IDC 部署，横向扩展的监控系统
+## 心跳报表
+![image.png](https://upload-images.jianshu.io/upload_images/6370985-8e31f9d5fde87ac6.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
 
-### 更新日志
+这里主要列出了所有项目当前小时的心跳情况，分别取了最大值和最小值的数据。
 
-- [**最新版本特性一览**](https://github.com/dianping/cat/blob/master/cat-doc/posts/new.md)
+## 事务报表
+![image.png](https://upload-images.jianshu.io/upload_images/6370985-50b74bd26c196de6.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
 
-    - 注意cat的3.0代码分支更新都发布在master上，包括最新文档也都是这个分支
-    - 注意文档请用最新master里面的代码文档作为标准，一些开源网站上面一些老版本的一些配置包括数据库等可能遇到不兼容情况，请以master代码为准，这份文档都是美团点评内部同学为这个版本统一整理汇总。内部同学已经核对，包括也验证过，如果遇到一些看不懂，或者模糊的地方，欢迎提交PR。
-    - 多语言客户端：Java、C/C++、Node.js、Python、Go [传送门](https://github.com/dianping/cat/tree/master/lib)
-        
-        * [**Java**](https://github.com/dianping/cat/blob/master/lib/java)
-        * [**C**](https://github.com/dianping/cat/blob/master/lib/c)
-        * [**C++**](https://github.com/dianping/cat/blob/master/lib/cpp)
-        * [**Python**](https://github.com/dianping/cat/blob/master/lib/python)
-        * [**Go**](https://github.com/dianping/cat/blob/master/lib/go)
-        * [**Node.js**](https://github.com/dianping/cat/blob/master/lib/node.js)
-        
-    - 消息采样聚合
-    - 序列化协议升级
-    - 全新文件存储引擎
-   
+> 这里的报表是通过跑批的数据跑出来的 
 
-### 监控模型：
+1. 这里的消息类型指的就是Transaction中的Type ， 通用的就是 interfaces 或者URL 
+2. 项目是针对项目名，支持前缀匹配 ： test-domain = test就能匹配到.
 
-支持 Transaction、Event、Heartbeat、Metric 四种消息模型。 [**模型设计**](https://github.com/dianping/cat/blob/master/cat-doc/posts/ch5-design/model.md)
+这里需要注意一点的就是小时的是实时计算出来的。天的话需要跑批。  
+由于CAT的天报表在这里去做的话会比较麻烦，因为需要聚合24小时的并且还要做特殊处理，建议通过跑批的方式在每个凌晨触发一个URL让它把指定类型的数据跑出来。
 
-### 模块简介
+跑批的URL ： http://localhost:2281/cat/r/toptransaction?op=topBatchDay&&type=interfaces&&date=20181217
 
-#### 功能模块
-
-- cat-client: 客户端，上报监控数据
-- cat-consumer: 服务端，收集监控数据进行统计分析，构建丰富的统计报表
-- cat-alarm: 实时告警，提供报表指标的监控告警
-- cat-hadoop: 数据存储，logview 存储至 Hdfs
-- cat-home: 管理端，报表展示、配置管理等
-
-> 1. 根目录下 cat-client 模块以后不再维护，下个大版本更新计划移除。新版Java客户端参考：lib/java
-> 2. 管理端、服务端、告警服务均使用 cat-home 模块部署即可
-
-#### 其他模块
-
-- cat-doc：服务端报表使用文档
-- integration：cat和一些第三方工具集成的内容（此部分一部分是由社区贡献，一部分官方贡献）
-- lib：CAT 的客户端，包括 Java、C/C++、Python、Node.js、Go
-- script：CAT 数据库脚本
-
-### Quick Start
-
-#### 服务端
-
-- [集群部署](https://github.com/dianping/cat/blob/master/cat-doc/posts/ch4-server/README.md)
-- [报表介绍](https://github.com/dianping/cat/blob/master/cat-doc/posts/ch1-report/README.md)
-- [配置手册](https://github.com/dianping/cat/blob/master/cat-doc/posts/ch2-config/README.md)
-
-### 项目设计
-
-- [项目架构](https://github.com/dianping/cat/blob/master/cat-doc/posts/ch5-design/overall.md)
-- [客户端设计](https://github.com/dianping/cat/blob/master/cat-doc/posts/ch5-design/client.md)
-- [服务端设计](https://github.com/dianping/cat/blob/master/cat-doc/posts/ch5-design/server.md)
-- [模型设计](https://github.com/dianping/cat/blob/master/cat-doc/posts/ch5-design/model.md)
-
-### Copyright and License
-
-[Apache 2.0 License.](/LICENSE)
-
-### CAT 接入公司
-
-![Alt text](cat-home/src/main/webapp/images/logo/companys.png)
-
-更多接入公司，欢迎在 <https://github.com/dianping/cat/issues/753> 登记
-
-### 联系我们
-
-我们需要知道你对Cat的一些看法以及建议：
-
-- Mail: cat@dianping.com，
-- [**Issues**](https://github.com/dianping/cat/issues)
+## 小细节改动
+1. 将每个接口的最长时间的日志展现出来
+![image.png](https://upload-images.jianshu.io/upload_images/6370985-c16441eaae72f4ae.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)

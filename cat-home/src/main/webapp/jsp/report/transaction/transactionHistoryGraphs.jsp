@@ -63,7 +63,7 @@
 		<td>${w:format(item.failCount,'#,###,###,###,##0')}</td>
 		<td>${w:format(item.failPercent/100,'0.0000%')}</td>
 		<td>${w:format(item.min,'###,##0.#')}</td>
-		<td>${w:format(item.max,'###,##0.#')}</td>
+		<td><a href="/cat/r/m/${item.longestMessageUrl}">${w:format(item.max,'###,##0.#')}</a></td>
 		<td>${w:format(item.avg,'###,##0.0')}</td>
 		<td>${w:format(item.std,'###,##0.0')}</td>
 	</tr>

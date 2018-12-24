@@ -39,7 +39,7 @@ public class Payload extends AbstractReportPayload<Action, ReportPage> {
 	private String m_sortBy;
 
 	@FieldMeta("type")
-	private String m_type;
+	private String m_type = "interfaces";
 
 	@FieldMeta("xml")
 	private boolean m_xml;

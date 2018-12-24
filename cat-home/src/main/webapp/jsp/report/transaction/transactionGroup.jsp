@@ -108,7 +108,7 @@
 					<td class="center"><a
 								href="/cat/r/m/${empty e.failMessageUrl ? e.successMessageUrl : e.failMessageUrl}?domain=${model.domain}">Log View</a></td>
 					<td>${w:format(e.min,'###,##0.#')}</td>
-					<td>${w:format(e.max,'###,##0.#')}</td>
+					<td><a href="/cat/r/m/${e.longestMessageUrl}">${w:format(e.max,'###,##0.#')}</a></td>
 					<td>${w:format(e.avg,'###,##0.0')}</td>
 					<td>${w:format(e.line95Value,'###,##0.0')}</td>
 					<td>${w:format(e.line99Value,'###,##0.0')}</td>
@@ -174,7 +174,7 @@
 					<td class="center"><a
 								href="/cat/r/m/${empty e.failMessageUrl ? e.successMessageUrl : e.failMessageUrl}?domain=${model.domain}">Log View</a></td>
 					<td>${w:format(e.min,'###,##0.#')}</td>
-					<td>${w:format(e.max,'###,##0.#')}</td>
+					<td><a href="/cat/r/m/${e.longestMessageUrl}">${w:format(e.max,'###,##0.#')}</a></td>
 					<td>${w:format(e.avg,'###,##0.0')}</td>
 					<c:choose>
 						<c:when test="${status.index > 0}">
