@@ -40,3 +40,21 @@
 ## 小细节改动
 1. 将每个接口的最长时间的日志展现出来
 ![image.png](https://upload-images.jianshu.io/upload_images/6370985-c16441eaae72f4ae.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+
+2. 读取应用名称修改
+SpringBoot读取domain的时候是需要在`META-INF/app.properties`中定义app.name来获取，
+不是非常友好。
+而本次针对加载顺序做了调整：
+    1. 首先加载启动参数中是否有`spring.application.name`配置
+    2. 其次判断启动参数中是否有`spring.profiles.active`环境区分配置,如果有则加载application-${spring.profiles.active}.yml配置中的`app.name` 。
+     > 例如变量为dev , 则加载application-dev.yml中的app.name
+    3. 最后再加载默认的CAT的配置:`META-INF/app.properties`  
+    
+上述流程只要其中一条满足，则不会往下执行。
+
+## 开发调试建议
+1. tomcat参数
+```tex
+// 解决乱码 , 并且打印debug日志,方便调试
+-Dfile.encoding=UTF-8 -DdevMode=true
+```
