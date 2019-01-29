@@ -96,15 +96,24 @@ public class Handler implements PageHandler<Context> {
         return heartbeatModel;
     }
 
+    private double[] getDefaultValue(Map<String, double[]> gc, String key) {
+        double[] doubles = gc.get(key);
+        if (doubles == null) {
+            doubles = new double[1];
+            doubles[0] = 0.0;
+        }
+        return doubles;
+    }
+
     private void getMaxDataValue(Payload payload, HeartbeatModel heartbeatModel, HeartbeatSvgGraph display, String ip) {
         Map<String, Map<String, double[]>> extensions = display.getExtensions();
         if (extensions != null) {
             Map<String, double[]> gc = extensions.get("GC");
             if (gc != null) {
-                double[] scavengeCounts = gc.get("PS ScavengeCount");
-                double[] scavengeTime = gc.get("PS ScavengeTime");
-                double[] markSweepCount = gc.get("PS MarkSweepCount");
-                double[] markSweepTime = gc.get("PS MarkSweepTime");
+                double[] scavengeCounts = getDefaultValue(gc,"PS ScavengeCount");
+                double[] scavengeTime = getDefaultValue(gc,"PS ScavengeTime");
+                double[] markSweepCount = getDefaultValue(gc,"PS MarkSweepCount");
+                double[] markSweepTime = getDefaultValue(gc,"PS MarkSweepTime");
                 double maxScavengeCounts = Doubles.max(scavengeCounts);
                 double maxScavengeTime = Doubles.max(scavengeTime);
                 double avgScavengeTime = maxScavengeTime / maxScavengeCounts;
@@ -129,7 +138,7 @@ public class Handler implements PageHandler<Context> {
             Map<String, double[]> frameworkThread = extensions.get("FrameworkThread");
 
             if (frameworkThread != null) {
-                double[] activeThreads = frameworkThread.get("ActiveThread");
+                double[] activeThreads = getDefaultValue(frameworkThread,"ActiveThread");
                 double maxActiveThreads = Doubles.max(activeThreads);
 
                 if (heartbeatModel.getActiveThread() < maxActiveThreads) {
@@ -140,13 +149,13 @@ public class Handler implements PageHandler<Context> {
 
             Map<String, double[]> system = extensions.get("System");
             if (system != null) {
-                double[] loadAverages = system.get("LoadAverage");
+                double[] loadAverages = getDefaultValue(system,"LoadAverage");
                 double maxLoadAverages = Doubles.max(loadAverages);
                 if (heartbeatModel.getLoadAverage() < maxLoadAverages) {
                     heartbeatModel.setLoadAverage(maxLoadAverages);
                     heartbeatModel.setLoadAverageIp(ip);
                 }
-                double[] freePhysicalMemories = system.get("FreePhysicalMemory");
+                double[] freePhysicalMemories =  getDefaultValue(system,"FreePhysicalMemory");
                 double freePhysicalMemory = 0d;
                 // 如果是当前now的获取方式则是取最后一分钟出现的值
                 if (payload.getCurrentDate() == payload.getDate()) {

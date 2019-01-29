@@ -18,19 +18,14 @@
  */
 package com.dianping.cat.report.view;
 
-import javax.servlet.Filter;
-import javax.servlet.FilterChain;
-import javax.servlet.FilterConfig;
-import javax.servlet.ServletException;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
+import com.dianping.cat.Cat;
+import com.dianping.cat.message.Event;
+
+import javax.servlet.*;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-
-import com.dianping.cat.Cat;
-import com.dianping.cat.message.Event;
 
 public class DomainFilter implements Filter {
 
@@ -103,6 +98,7 @@ public class DomainFilter implements Filter {
 		logClientIpInfo(httpRequest);
 
 		chain.doFilter(request, response);
+
 	}
 
 	public void init(FilterConfig filterConfig) throws ServletException {

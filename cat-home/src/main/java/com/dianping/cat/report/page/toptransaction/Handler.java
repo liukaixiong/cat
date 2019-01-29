@@ -285,8 +285,8 @@ public class Handler implements PageHandler<Context> {
                     if (StringUtils.isNotEmpty(queryName) && !domain.startsWith(queryName)) {
                         continue;
                     }
-                    System.out.println("process project : " + domain);
-                    TransactionType transactionType = new TransactionType();
+//                    System.out.println("process project : " + domain);
+                    TransactionType transactionType = null;
                     payload.setDomain(domain);
                     switch (action) {
                         case HOURLY_REPORT:
@@ -294,6 +294,9 @@ public class Handler implements PageHandler<Context> {
                             report = m_mergeHelper.mergeAllMachines(report, ipAddress);
 
                             transactionType = getReportData(model, type, report);
+                            if (transactionType != null && transactionType.getId() == null) {
+                                transactionType.setMin(0d);
+                            }
                             break;
                         case TOP_BATCH_DATA:
                             report = m_reportService.queryReport(domain, payload.getHistoryStartDate(), payload.getHistoryEndDate());

@@ -18,12 +18,6 @@
  */
 package com.dianping.cat.build.report;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.unidal.lookup.configuration.AbstractResourceConfigurator;
-import org.unidal.lookup.configuration.Component;
-
 import com.dianping.cat.alarm.spi.config.AlertConfigManager;
 import com.dianping.cat.alarm.spi.decorator.Decorator;
 import com.dianping.cat.alarm.spi.receiver.Contactor;
@@ -33,6 +27,7 @@ import com.dianping.cat.report.alert.transaction.TransactionAlert;
 import com.dianping.cat.report.alert.transaction.TransactionContactor;
 import com.dianping.cat.report.alert.transaction.TransactionDecorator;
 import com.dianping.cat.report.alert.transaction.TransactionRuleConfigManager;
+import com.dianping.cat.report.page.toptransaction.service.TopTransactionReportService;
 import com.dianping.cat.report.page.transaction.service.CompositeTransactionService;
 import com.dianping.cat.report.page.transaction.service.HistoricalTransactionService;
 import com.dianping.cat.report.page.transaction.service.LocalTransactionService;
@@ -42,6 +37,11 @@ import com.dianping.cat.report.page.transaction.transform.TransactionMergeHelper
 import com.dianping.cat.report.server.RemoteServersManager;
 import com.dianping.cat.report.service.ModelService;
 import com.dianping.cat.service.ProjectService;
+import org.unidal.lookup.configuration.AbstractResourceConfigurator;
+import org.unidal.lookup.configuration.Component;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class TransactionComponentConfigurator extends AbstractResourceConfigurator {
 	@Override
@@ -50,6 +50,7 @@ public class TransactionComponentConfigurator extends AbstractResourceConfigurat
 
 		all.add(A(TransactionMergeHelper.class));
 		all.add(A(TransactionReportService.class));
+		all.add(A(TopTransactionReportService.class));
 		all.add(A(TransactionRuleConfigManager.class));
 
 		all.add(C(Contactor.class, TransactionContactor.ID, TransactionContactor.class)

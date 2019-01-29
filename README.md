@@ -48,8 +48,8 @@ SpringBoot读取domain的时候是需要在`META-INF/app.properties`中定义app
     1. 首先加载启动参数中是否有`spring.application.name`配置
     2. 其次判断启动参数中是否有`spring.profiles.active`环境区分配置,如果有则加载application-${spring.profiles.active}.yml配置中的`app.name` 。
      > 例如变量为dev , 则加载application-dev.yml中的app.name
-    3. 最后再加载默认的CAT的配置:`META-INF/app.properties`  
-    
+    3. 最后再加载默认的CAT的配置:`META-INF/app.properties`
+
 上述流程只要其中一条满足，则不会往下执行。
 
 ## 开发调试建议
@@ -58,3 +58,27 @@ SpringBoot读取domain的时候是需要在`META-INF/app.properties`中定义app
 // 解决乱码 , 并且打印debug日志,方便调试
 -Dfile.encoding=UTF-8 -DdevMode=true
 ```
+
+2. 停止tomcat,关闭2280脚本
+> vim stop.sh
+```shell
+curl http://localhost:2281/cat/r/home?op=checkpoint
+cd bin
+./shutdown.sh
+```
+
+
+## 针对一些使用CAT遇到的一些问题记录并且提出解决方案:
+#### 如果按照配置发现还是收不到告警邮件或者短信等等如何排查?
+> 前提是已经按照文档配置还是不行!!!!!
+1. 先判断是否报警的配置是否有误?
+直接到测试用例中com.dianping.cat.report.alert.SenderManagerTest去尝试一下。
+如果这个用例发送成功了，表明发送的这部分是OK的。需要注意的是这个是本地环境，如果是测试环境，则可以将本地数据源切换成测试换数据源。
+2. 判断是否配置的项目是否有误？
+ 2.1 CAT如果触发了要发邮件的规则,会在数据表alert中体现。
+3. 源码角度
+ 3.1 com.dianping.cat.alarm.spi.AlertManager中会在SendExecutor中启动一个线程run来查看队列中是否存在需要发送的消息,在那里定位一下就OK了
+
+
+#### 点击LogViews中查看消息 : Sorry, the message is not there. It could be missing or archived.
+查看客户端版本是否是2.0或者2.0以下的? **升级到3.0**
