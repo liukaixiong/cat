@@ -290,4 +290,16 @@ org.eclipse.jdt.core.compiler.compliance=1.7
 	<properties>
 		<project.build.sourceEncoding>utf-8</project.build.sourceEncoding>
     </properties>
+	<distributionManagement>
+		<!--<repository>-->
+			<!--<id>releases</id>-->
+			<!--<name>Nexus Release Repository</name>-->
+			<!--<url>http://192.168.0.11:8081/nexus/content/repositories/elab/</url>-->
+		<!--</repository>-->
+		<snapshotRepository>
+			<id>snapshots</id>
+			<name>User Project SNAPSHOTS</name>
+			<url>http://192.168.0.11:8081/nexus/content/repositories/snapshots/</url>
+		</snapshotRepository>
+	</distributionManagement>
 </project>

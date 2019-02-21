@@ -15,7 +15,6 @@
 
 > 这里主要是汇总了所有项目这一个小时的异常情况，并且将异常进行划分。
 
-
 **稍微提一下这个和CAT本身的Dashboard有何区别?**  
 其实CAT的这个报表的纬度是八分钟，并不是一个小时之内，需要用户自己根据选择分钟才能看到当前分钟和前八分钟的异常情况。
 
@@ -42,13 +41,14 @@
 ![image.png](https://upload-images.jianshu.io/upload_images/6370985-c16441eaae72f4ae.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
 
 2. 读取应用名称修改
-SpringBoot读取domain的时候是需要在`META-INF/app.properties`中定义app.name来获取，
-不是非常友好。
-而本次针对加载顺序做了调整：
-    1. 首先加载启动参数中是否有`spring.application.name`配置
-    2. 其次判断启动参数中是否有`spring.profiles.active`环境区分配置,如果有则加载application-${spring.profiles.active}.yml配置中的`app.name` 。
-     > 例如变量为dev , 则加载application-dev.yml中的app.name
-    3. 最后再加载默认的CAT的配置:`META-INF/app.properties`
+  SpringBoot读取domain的时候是需要在`META-INF/app.properties`中定义app.name来获取，
+  不是非常友好。
+  而本次针对加载顺序做了调整：
+   1. 首先加载启动参数中是否有`spring.application.name`配置
+   2. 其次判断启动参数中是否有`spring.profiles.active`环境区分配置,如果有则加载application-${spring.profiles.active}.yml配置中的`app.name` 。
+    > 例如变量为dev , 则加载application-dev.yml中的app.name
+
+   3. 最后再加载默认的CAT的配置:`META-INF/app.properties`
 
 上述流程只要其中一条满足，则不会往下执行。
 
@@ -72,13 +72,24 @@ cd bin
 #### 如果按照配置发现还是收不到告警邮件或者短信等等如何排查?
 > 前提是已经按照文档配置还是不行!!!!!
 1. 先判断是否报警的配置是否有误?
-直接到测试用例中com.dianping.cat.report.alert.SenderManagerTest去尝试一下。
-如果这个用例发送成功了，表明发送的这部分是OK的。需要注意的是这个是本地环境，如果是测试环境，则可以将本地数据源切换成测试换数据源。
+  1. 直接到测试用例中com.dianping.cat.report.alert.SenderManagerTest去尝试一下。
+    如果这个用例发送成功了，表明发送的这部分配置是OK的。
+  2. 需要注意的是这个是本地环境，如果是测试环境，则可以将本地数据源切换成测试换数据源。
 2. 判断是否配置的项目是否有误？
- 2.1 CAT如果触发了要发邮件的规则,会在数据表alert中体现。
+ - CAT如果触发了要发邮件的规则,会在数据表alert中体现。
 3. 源码角度
- 3.1 com.dianping.cat.alarm.spi.AlertManager中会在SendExecutor中启动一个线程run来查看队列中是否存在需要发送的消息,在那里定位一下就OK了
+ - com.dianping.cat.alarm.spi.AlertManager中会在SendExecutor中启动一个线程run来查看队列中是否存在需要发送的消息,在那里定位一下就OK了
+ - 又或者在AlertManager.addAlert的方法中加入断点,因为所有发送告警的都会经过该方法,如果该方法触发了,说明规则没问题。
 
 
 #### 点击LogViews中查看消息 : Sorry, the message is not there. It could be missing or archived.
-查看客户端版本是否是2.0或者2.0以下的? **升级到3.0**
+查看客户端版本是否是2.0或者2.0以下的? **升级到3.0**  
+
+具体原因分析 : [CAT消息丢失问题排查Sorry, the message is not there. It could be missing or archived.](https://www.jianshu.com/p/186e7b959a66)
+
+#### 查看小时数据是有的,历史数据数据都没有
+原因: 没有开启历史数据线程
+
+需要在configs - 全局系统配置 - 服务端配置 - job-machine 设置为 true 。
+
+需要注意的是，设置好了之后需要重启，因为在启动的时候才会起开启这个线程

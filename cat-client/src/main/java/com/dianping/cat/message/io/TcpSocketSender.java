@@ -18,21 +18,6 @@
  */
 package com.dianping.cat.message.io;
 
-import java.net.InetSocketAddress;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.atomic.AtomicInteger;
-
-import io.netty.buffer.ByteBuf;
-import io.netty.channel.ChannelFuture;
-import org.codehaus.plexus.logging.LogEnabled;
-import org.codehaus.plexus.logging.Logger;
-import org.unidal.helper.Threads;
-import org.unidal.helper.Threads.Task;
-import org.unidal.lookup.annotation.Inject;
-import org.unidal.lookup.annotation.Named;
-
 import com.dianping.cat.ApplicationSettings;
 import com.dianping.cat.analyzer.LocalAggregator;
 import com.dianping.cat.configuration.ClientConfigManager;
@@ -47,6 +32,20 @@ import com.dianping.cat.message.spi.codec.NativeMessageCodec;
 import com.dianping.cat.message.spi.internal.DefaultMessageTree;
 import com.dianping.cat.status.StatusExtension;
 import com.dianping.cat.status.StatusExtensionRegister;
+import io.netty.buffer.ByteBuf;
+import io.netty.channel.ChannelFuture;
+import org.codehaus.plexus.logging.LogEnabled;
+import org.codehaus.plexus.logging.Logger;
+import org.unidal.helper.Threads;
+import org.unidal.helper.Threads.Task;
+import org.unidal.lookup.annotation.Inject;
+import org.unidal.lookup.annotation.Named;
+
+import java.net.InetSocketAddress;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
 
 @Named
 public class TcpSocketSender implements Task, MessageSender, LogEnabled {
@@ -277,6 +276,19 @@ public class TcpSocketSender implements Task, MessageSender, LogEnabled {
 		LocalAggregator.aggregate(tree);
 	}
 
+	private boolean shouldMerge(MessageQueue queue) {
+		MessageTree tree = queue.peek();
+
+		if (tree != null) {
+			long firstTime = tree.getMessage().getTimestamp();
+
+			if (System.currentTimeMillis() - firstTime > MAX_DURATION || queue.size() >= MAX_CHILD_NUMBER) {
+				return true;
+			}
+		}
+		return false;
+	}
+
 	public void sendInternal(ChannelFuture channel, MessageTree tree) {
 		if (tree.getMessageId() == null) {
 			tree.setMessageId(m_factory.getNextId());
@@ -291,19 +303,6 @@ public class TcpSocketSender implements Task, MessageSender, LogEnabled {
 		if (m_statistics != null) {
 			m_statistics.onBytes(size);
 		}
-	}
-
-	private boolean shouldMerge(MessageQueue queue) {
-		MessageTree tree = queue.peek();
-
-		if (tree != null) {
-			long firstTime = tree.getMessage().getTimestamp();
-
-			if (System.currentTimeMillis() - firstTime > MAX_DURATION || queue.size() >= MAX_CHILD_NUMBER) {
-				return true;
-			}
-		}
-		return false;
 	}
 
 	@Override

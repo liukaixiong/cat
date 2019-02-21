@@ -216,11 +216,15 @@ public class DefaultClientConfigManager implements LogEnabled, ClientConfigManag
     private ClientConfig loadConfigFromEnviroment() {
         // 从环境变量中获取
         String appName = EnvUtils.getDomainEnv();
+        m_logger.info(" app env : " + appName);
         if (StringUtils.isEmpty(appName)) {
             // 从环境标识文件中获取
             String filePath = EnvUtils.getSystemPropertyFile();
-            if(StringUtils.isNotEmpty(filePath)) {
+            m_logger.info(" system env :" + filePath);
+            if (StringUtils.isNotEmpty(filePath)) {
                 appName = loadProjectName(filePath);
+            } else {
+                m_logger.info(" env get file not ! filepath : " + filePath);
             }
 
             if (StringUtils.isEmpty(appName)) {
@@ -228,7 +232,7 @@ public class DefaultClientConfigManager implements LogEnabled, ClientConfigManag
                 appName = loadProjectName(PROPERTIES_FILE);
             }
         }
-
+        m_logger.info(" get appName : " + appName);
         if (appName != null) {
             ClientConfig config = new ClientConfig();
 
@@ -241,17 +245,23 @@ public class DefaultClientConfigManager implements LogEnabled, ClientConfigManag
     private String loadProjectName(String fileName) {
         String appName = null;
         InputStream in = null;
-
+        m_logger.info(" find name: " + fileName);
         try {
-            in = Thread.currentThread().getContextClassLoader().getResourceAsStream(fileName);
+            in = Cat.class.getResourceAsStream(fileName);
+            m_logger.info("Cat.class get Resource " + (in != null));
 
             if (in == null) {
-                in = Cat.class.getResourceAsStream(fileName);
+                in = Thread.currentThread().getContextClassLoader().getResourceAsStream(fileName);
+                m_logger.info("Thread.currentThread() get Resource " + (in != null));
             }
             if (in != null) {
                 Properties prop = new Properties();
 
                 prop.load(in);
+
+                if (prop.stringPropertyNames() != null) {
+                    m_logger.info(" prop size : " + prop.stringPropertyNames().size());
+                }
 
                 appName = prop.getProperty("app.name");
                 if (appName != null) {
