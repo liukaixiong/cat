@@ -18,16 +18,15 @@
  */
 package com.dianping.cat.report.alert;
 
-import java.util.Date;
-import java.util.concurrent.TimeUnit;
-
+import com.dianping.cat.alarm.spi.AlertEntity;
+import com.dianping.cat.alarm.spi.AlertManager;
+import com.dianping.cat.alarm.spi.AlertType;
 import junit.framework.Assert;
 import org.junit.Test;
 import org.unidal.lookup.ComponentTestCase;
 
-import com.dianping.cat.alarm.spi.AlertEntity;
-import com.dianping.cat.alarm.spi.AlertManager;
-import com.dianping.cat.alarm.spi.AlertType;
+import java.util.Date;
+import java.util.concurrent.TimeUnit;
 
 public class SuspendTest extends ComponentTestCase {
 
@@ -36,7 +35,7 @@ public class SuspendTest extends ComponentTestCase {
 		AlertManager manager = lookup(AlertManager.class);
 		AlertEntity entity = new AlertEntity();
 		entity.setDate(new Date()).setContent("test").setLevel("error");
-		entity.setMetric("testMetric").setType(AlertType.Network.getName()).setGroup("testGroup");
+		entity.setMetric("testMetric").setType(AlertType.Transaction.getName()).setGroup("testGroup");
 
 		try {
 			manager.addAlert(entity);

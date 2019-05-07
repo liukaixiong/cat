@@ -19,30 +19,32 @@
 package com.dianping.cat.report.page.home;
 
 public enum Action implements org.unidal.web.mvc.Action {
-	CHECKPOINT("checkpoint"),
+    CHECKPOINT("stop_checkpoint"),
 
-	THREAD_DUMP("threadDump"),
+    STARTPOINT("startpoint"),
 
-	VIEW("view");
+    THREAD_DUMP("threadDump"),
 
-	private String m_name;
+    VIEW("view");
 
-	private Action(String name) {
-		m_name = name;
-	}
+    private String m_name;
 
-	public static Action getByName(String name, Action defaultAction) {
-		for (Action action : Action.values()) {
-			if (action.getName().equals(name)) {
-				return action;
-			}
-		}
+    private Action(String name) {
+        m_name = name;
+    }
 
-		return defaultAction;
-	}
+    public static Action getByName(String name, Action defaultAction) {
+        for (Action action : Action.values()) {
+            if (action.getName().equals(name)) {
+                return action;
+            }
+        }
 
-	@Override
-	public String getName() {
-		return m_name;
-	}
+        return defaultAction;
+    }
+
+    @Override
+    public String getName() {
+        return m_name;
+    }
 }

@@ -18,35 +18,27 @@
  */
 package com.dianping.cat;
 
-import java.io.File;
-import java.text.MessageFormat;
-import java.util.Date;
-
+import com.dianping.cat.configuration.client.entity.ClientConfig;
+import com.dianping.cat.configuration.client.entity.Domain;
+import com.dianping.cat.configuration.client.entity.Server;
+import com.dianping.cat.message.*;
+import com.dianping.cat.message.internal.NullMessage;
+import com.dianping.cat.message.internal.NullMessageManager;
+import com.dianping.cat.message.internal.NullMessageProducer;
+import com.dianping.cat.message.spi.MessageManager;
+import com.dianping.cat.message.spi.MessageTree;
 import org.codehaus.plexus.PlexusContainer;
 import org.codehaus.plexus.component.repository.exception.ComponentLookupException;
 import org.unidal.helper.Files;
-import org.unidal.helper.Properties;
 import org.unidal.initialization.DefaultModuleContext;
 import org.unidal.initialization.Module;
 import org.unidal.initialization.ModuleContext;
 import org.unidal.initialization.ModuleInitializer;
 import org.unidal.lookup.ContainerLoader;
 
-import com.dianping.cat.configuration.client.entity.ClientConfig;
-import com.dianping.cat.configuration.client.entity.Domain;
-import com.dianping.cat.configuration.client.entity.Server;
-import com.dianping.cat.message.Event;
-import com.dianping.cat.message.ForkedTransaction;
-import com.dianping.cat.message.Heartbeat;
-import com.dianping.cat.message.MessageProducer;
-import com.dianping.cat.message.TaggedTransaction;
-import com.dianping.cat.message.Trace;
-import com.dianping.cat.message.Transaction;
-import com.dianping.cat.message.internal.NullMessage;
-import com.dianping.cat.message.internal.NullMessageManager;
-import com.dianping.cat.message.internal.NullMessageProducer;
-import com.dianping.cat.message.spi.MessageManager;
-import com.dianping.cat.message.spi.MessageTree;
+import java.io.File;
+import java.text.MessageFormat;
+import java.util.Date;
 
 /**
 	* This is the main entry point to the system.
@@ -105,8 +97,10 @@ public class Cat {
 	}
 
 	public static String getCatHome() {
-		String catHome = CatPropertyProvider.INST.getProperty("CAT_HOME", "/data/appdatas/cat/");
-
+		String catHome = CatPropertyProvider.INST.getProperty("CAT_HOME", CatConstants.CAT_HOME_DEFAULT_DIR);
+		if (!catHome.endsWith("/")) {
+			catHome = catHome + "/";
+		}
 		return catHome;
 	}
 

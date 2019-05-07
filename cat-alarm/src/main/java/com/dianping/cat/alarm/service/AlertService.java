@@ -22,7 +22,6 @@ import com.dianping.cat.Cat;
 import com.dianping.cat.alarm.Alert;
 import com.dianping.cat.alarm.AlertDao;
 import com.dianping.cat.alarm.spi.AlertEntity;
-import com.dianping.cat.alarm.spi.AlertType;
 import com.dianping.cat.alarm.spi.sender.SendMessageEntity;
 import org.unidal.dal.jdbc.DalException;
 import org.unidal.dal.jdbc.DalNotFoundException;
@@ -68,9 +67,6 @@ public class AlertService {
 	}
 
 	public void insert(AlertEntity alertEntity, SendMessageEntity message) {
-		if (alertEntity.getType().getName().equals(AlertType.FrontEndException.getName())) {
-			return;
-		}
 		Alert alert = buildAlert(alertEntity, message);
 
 		try {

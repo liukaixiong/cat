@@ -93,3 +93,6 @@ cd bin
 需要在configs - 全局系统配置 - 服务端配置 - job-machine 设置为 true 。
 
 需要注意的是，设置好了之后需要重启，因为在启动的时候才会起开启这个线程
+
+##### 密码修改
+参考 : SessionManager.java : 我这里默认的是elab@666

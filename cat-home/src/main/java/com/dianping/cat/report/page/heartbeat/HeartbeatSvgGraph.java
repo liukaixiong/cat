@@ -18,21 +18,17 @@
  */
 package com.dianping.cat.report.page.heartbeat;
 
+import com.dianping.cat.consumer.heartbeat.model.entity.*;
+import com.dianping.cat.home.heartbeat.entity.Metric;
+import com.dianping.cat.report.graph.svg.GraphBuilder;
+import com.dianping.cat.report.page.heartbeat.config.HeartbeatDisplayPolicyManager;
+
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.atomic.AtomicInteger;
-
-import com.dianping.cat.consumer.heartbeat.model.entity.Detail;
-import com.dianping.cat.consumer.heartbeat.model.entity.Extension;
-import com.dianping.cat.consumer.heartbeat.model.entity.HeartbeatReport;
-import com.dianping.cat.consumer.heartbeat.model.entity.Machine;
-import com.dianping.cat.consumer.heartbeat.model.entity.Period;
-import com.dianping.cat.home.heartbeat.entity.Metric;
-import com.dianping.cat.report.graph.svg.GraphBuilder;
-import com.dianping.cat.report.page.heartbeat.config.HeartbeatDisplayPolicyManager;
 
 public class HeartbeatSvgGraph {
 
@@ -104,7 +100,7 @@ public class HeartbeatSvgGraph {
 				String key = item.getKey();
 				Metric metricConfig = m_manager.queryMetric(title, key);
 				String svgTitle = key;
-				String lable = "MB";
+				String lable = "";
 
 				if (metricConfig != null) {
 					String configTitle = metricConfig.getTitle();

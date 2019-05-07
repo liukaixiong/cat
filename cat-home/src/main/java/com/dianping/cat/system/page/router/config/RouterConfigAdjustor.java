@@ -18,19 +18,6 @@
  */
 package com.dianping.cat.system.page.router.config;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-
-import org.unidal.dal.jdbc.DalException;
-import org.unidal.helper.Splitters;
-import org.unidal.lookup.annotation.Inject;
-import org.unidal.lookup.annotation.Named;
-
 import com.dianping.cat.Cat;
 import com.dianping.cat.Constants;
 import com.dianping.cat.config.server.ServerConfigManager;
@@ -42,16 +29,19 @@ import com.dianping.cat.core.dal.DailyReportDao;
 import com.dianping.cat.core.dal.DailyReportEntity;
 import com.dianping.cat.helper.SortHelper;
 import com.dianping.cat.helper.TimeHelper;
-import com.dianping.cat.home.router.entity.DefaultServer;
-import com.dianping.cat.home.router.entity.Domain;
-import com.dianping.cat.home.router.entity.Group;
-import com.dianping.cat.home.router.entity.RouterConfig;
-import com.dianping.cat.home.router.entity.Server;
+import com.dianping.cat.home.router.entity.*;
 import com.dianping.cat.home.router.transform.DefaultNativeBuilder;
 import com.dianping.cat.report.page.state.StateBuilder;
 import com.dianping.cat.report.page.state.service.StateReportService;
 import com.dianping.cat.system.page.router.service.RouterConfigService;
 import com.dianping.cat.system.page.router.task.RouterConfigBuilder;
+import org.unidal.dal.jdbc.DalException;
+import org.unidal.helper.Splitters;
+import org.unidal.lookup.annotation.Inject;
+import org.unidal.lookup.annotation.Named;
+
+import java.util.*;
+import java.util.Map.Entry;
 
 @Named
 public class RouterConfigAdjustor {
@@ -228,7 +218,7 @@ public class RouterConfigAdjustor {
 	private Map<Server, Long> processGroupMachines(Map<String, Machine> machines) {
 		Map<Server, Long> results = new HashMap<Server, Long>();
 		long total = calculateTotal(machines);
-		Long minGap = total / 100;
+		long minGap = total / 100;
 		long avg = total / machines.size();
 
 		for (Machine machine : machines.values()) {

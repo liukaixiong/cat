@@ -18,14 +18,12 @@
  */
 package com.dianping.cat.report.page.model;
 
-import javax.servlet.ServletException;
-import javax.servlet.ServletOutputStream;
-import javax.servlet.http.HttpServletResponse;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.util.Map;
-import java.util.zip.GZIPOutputStream;
-
+import com.dianping.cat.Cat;
+import com.dianping.cat.message.internal.MessageId;
+import com.dianping.cat.report.ReportPage;
+import com.dianping.cat.report.service.LocalModelService;
+import com.dianping.cat.report.service.ModelPeriod;
+import com.dianping.cat.report.service.ModelRequest;
 import org.codehaus.plexus.personality.plexus.lifecycle.phase.Initializable;
 import org.codehaus.plexus.personality.plexus.lifecycle.phase.InitializationException;
 import org.unidal.lookup.ContainerHolder;
@@ -34,12 +32,14 @@ import org.unidal.web.mvc.annotation.InboundActionMeta;
 import org.unidal.web.mvc.annotation.OutboundActionMeta;
 import org.unidal.web.mvc.annotation.PayloadMeta;
 
-import com.dianping.cat.Cat;
-import com.dianping.cat.message.internal.MessageId;
-import com.dianping.cat.report.ReportPage;
-import com.dianping.cat.report.service.LocalModelService;
-import com.dianping.cat.report.service.ModelPeriod;
-import com.dianping.cat.report.service.ModelRequest;
+import javax.servlet.ServletException;
+import javax.servlet.ServletOutputStream;
+import javax.servlet.http.HttpServletResponse;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.util.Map;
+import java.util.zip.GZIPOutputStream;
 
 @SuppressWarnings("rawtypes")
 public class Handler extends ContainerHolder implements Initializable, PageHandler<Context> {
@@ -49,7 +49,7 @@ public class Handler extends ContainerHolder implements Initializable, PageHandl
 	private byte[] compress(String str) throws IOException {
 		ByteArrayOutputStream out = new ByteArrayOutputStream(1024 * 32);
 		GZIPOutputStream gzip = new GZIPOutputStream(out);
-		gzip.write(str.getBytes());
+		gzip.write(str.getBytes(StandardCharsets.UTF_8));
 		gzip.close();
 		return out.toByteArray();
 	}

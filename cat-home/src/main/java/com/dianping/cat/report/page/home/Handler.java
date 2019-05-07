@@ -18,98 +18,136 @@
  */
 package com.dianping.cat.report.page.home;
 
-import javax.servlet.ServletException;
-import java.io.IOException;
-import java.lang.management.ManagementFactory;
-import java.lang.management.ThreadInfo;
-import java.lang.management.ThreadMXBean;
-import java.util.TreeMap;
-
+import com.dianping.cat.analysis.MessageConsumer;
+import com.dianping.cat.analysis.TcpSocketReceiver;
+import com.dianping.cat.report.ReportPage;
+import org.codehaus.plexus.logging.LogEnabled;
+import org.codehaus.plexus.logging.Logger;
 import org.unidal.lookup.annotation.Inject;
 import org.unidal.web.mvc.PageHandler;
 import org.unidal.web.mvc.annotation.InboundActionMeta;
 import org.unidal.web.mvc.annotation.OutboundActionMeta;
 import org.unidal.web.mvc.annotation.PayloadMeta;
 
-import com.dianping.cat.analysis.MessageConsumer;
-import com.dianping.cat.analysis.TcpSocketReceiver;
-import com.dianping.cat.report.ReportPage;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
+import java.lang.management.ManagementFactory;
+import java.lang.management.ThreadInfo;
+import java.lang.management.ThreadMXBean;
+import java.util.Enumeration;
+import java.util.TreeMap;
 
-public class Handler implements PageHandler<Context> {
-	@Inject
-	private JspViewer m_jspViewer;
+public class Handler implements PageHandler<Context>, LogEnabled {
+    @Inject
+    private JspViewer m_jspViewer;
 
-	@Inject
-	private TcpSocketReceiver m_receiver;
+    @Inject
+    private TcpSocketReceiver m_receiver;
 
-	@Inject
-	private MessageConsumer m_realtimeConsumer;
+    @Inject
+    private MessageConsumer m_realtimeConsumer;
 
-	@Override
-	@PayloadMeta(Payload.class)
-	@InboundActionMeta(name = "home")
-	public void handleInbound(Context ctx) throws ServletException, IOException {
-	}
+    private Logger logger;
 
-	@Override
-	@OutboundActionMeta(name = "home")
-	public void handleOutbound(Context ctx) throws ServletException, IOException {
-		Model model = new Model(ctx);
-		Payload payload = ctx.getPayload();
+    @Override
+    public void enableLogging(Logger logger) {
+        this.logger = logger;
+    }
 
-		switch (payload.getAction()) {
-		case THREAD_DUMP:
-			showThreadDump(model, payload);
-			break;
-		case VIEW:
-			break;
-		case CHECKPOINT:
-			m_receiver.destory();
-			m_realtimeConsumer.doCheckpoint();
-			break;
-		default:
-			break;
-		}
+    @Override
+    @PayloadMeta(Payload.class)
+    @InboundActionMeta(name = "home")
+    public void handleInbound(Context ctx) throws ServletException, IOException {
+    }
 
-		model.setAction(payload.getAction());
-		model.setPage(ReportPage.HOME);
-		model.setDomain(payload.getDomain());
-		model.setDate(payload.getDate());
-		m_jspViewer.view(ctx, model);
-	}
+    @Override
+    @OutboundActionMeta(name = "home")
+    public void handleOutbound(Context ctx) throws ServletException, IOException {
+        Model model = new Model(ctx);
+        Payload payload = ctx.getPayload();
 
-	private void showThreadDump(Model model, Payload payload) {
-		ThreadMXBean bean = ManagementFactory.getThreadMXBean();
-		ThreadInfo[] threads = bean.dumpAllThreads(true, true);
-		StringBuilder sb = new StringBuilder(32768);
-		int index = 1;
+        switch (payload.getAction()) {
+            case THREAD_DUMP:
+                showThreadDump(model, payload);
+                break;
+            case VIEW:
+                break;
+            case CHECKPOINT:
+                logger.info("-------- stop port---------");
+                requestLog(ctx);
+                m_receiver.destory();
+                m_realtimeConsumer.doCheckpoint();
+                break;
+            case STARTPOINT:
+                logger.info("-------- start port ---------");
+                requestLog(ctx);
+                try {
+                    m_receiver.startServer(2280);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                break;
+            default:
+                break;
+        }
 
-		TreeMap<String, ThreadInfo> sortedThreads = new TreeMap<String, ThreadInfo>();
+        model.setAction(payload.getAction());
+        model.setPage(ReportPage.HOME);
+        model.setDomain(payload.getDomain());
+        model.setDate(payload.getDate());
+        m_jspViewer.view(ctx, model);
+    }
 
-		for (ThreadInfo thread : threads) {
-			sortedThreads.put(thread.getThreadName(), thread);
-		}
+    /**
+     * 将停止应用产生的请求参数打印出来,防止别人误操作
+     *
+     * @param ctx
+     */
+    private void requestLog(Context ctx) {
+        HttpServletRequest request = ctx.getHttpServletRequest();
+        Enumeration headerNames = request.getHeaderNames();
+        logger.info("---请求参数:" + request.getQueryString() + "-----IP:" + request.getRemoteAddr());
+        logger.info(" header对象输出 : ");
+        while (headerNames.hasMoreElements()) {
+            Object name = headerNames.nextElement();
+            String value = request.getHeader(name.toString());
+            logger.info(name + ":" + value);
+        }
+    }
 
-		sb.append("Threads: ").append(threads.length);
-		sb.append("<pre>");
+    private void showThreadDump(Model model, Payload payload) {
+        ThreadMXBean bean = ManagementFactory.getThreadMXBean();
+        ThreadInfo[] threads = bean.dumpAllThreads(true, true);
+        StringBuilder sb = new StringBuilder(32768);
+        int index = 1;
 
-		for (ThreadInfo thread : sortedThreads.values()) {
-			sb.append(index++).append(": <a href=\"#").append(thread.getThreadId()).append("\">").append(thread.getThreadName())
-									.append("</a>\r\n");
-		}
+        TreeMap<String, ThreadInfo> sortedThreads = new TreeMap<String, ThreadInfo>();
 
-		sb.append("\r\n");
-		sb.append("\r\n");
+        for (ThreadInfo thread : threads) {
+            sortedThreads.put(thread.getThreadName(), thread);
+        }
 
-		index = 1;
+        sb.append("Threads: ").append(threads.length);
+        sb.append("<pre>");
 
-		for (ThreadInfo thread : sortedThreads.values()) {
-			sb.append("<a name=\"").append(thread.getThreadId()).append("\">").append(index++).append(": ").append(thread)
-									.append("\r\n");
-		}
+        for (ThreadInfo thread : sortedThreads.values()) {
+            sb.append(index++).append(": <a href=\"#").append(thread.getThreadId()).append("\">").append(thread.getThreadName())
+                    .append("</a>\r\n");
+        }
 
-		sb.append("</pre>");
+        sb.append("\r\n");
+        sb.append("\r\n");
 
-		model.setContent(sb.toString());
-	}
+        index = 1;
+
+        for (ThreadInfo thread : sortedThreads.values()) {
+            sb.append("<a name=\"").append(thread.getThreadId()).append("\">").append(index++).append(": ").append(thread)
+                    .append("\r\n");
+        }
+
+        sb.append("</pre>");
+
+        model.setContent(sb.toString());
+    }
 }

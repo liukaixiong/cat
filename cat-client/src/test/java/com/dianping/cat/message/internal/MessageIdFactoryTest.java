@@ -18,12 +18,7 @@
  */
 package com.dianping.cat.message.internal;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.CountDownLatch;
-
+import com.dianping.cat.Cat;
 import junit.framework.Assert;
 import org.junit.After;
 import org.junit.Before;
@@ -33,7 +28,11 @@ import org.unidal.helper.Scanners.FileMatcher;
 import org.unidal.helper.Threads;
 import org.unidal.helper.Threads.Task;
 
-import com.dianping.cat.Cat;
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.CountDownLatch;
 
 public class MessageIdFactoryTest {
 	final static char[] digits = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f' };
@@ -232,7 +231,7 @@ public class MessageIdFactoryTest {
 			for (int j = 0; j < 100; j++) {
 				String domain = "domain" + j;
 				String nextId = m_factory.getNextId(domain);
-				//System.out.println(nextId);
+				System.out.println(nextId);
 			}
 		}
 

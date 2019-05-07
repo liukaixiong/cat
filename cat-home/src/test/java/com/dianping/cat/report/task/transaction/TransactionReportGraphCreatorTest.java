@@ -18,18 +18,16 @@
  */
 package com.dianping.cat.report.task.transaction;
 
-import java.text.SimpleDateFormat;
-
+import com.dianping.cat.TestHelper;
+import com.dianping.cat.consumer.transaction.model.entity.TransactionReport;
+import com.dianping.cat.consumer.transaction.model.transform.DefaultSaxParser;
+import com.dianping.cat.report.page.transaction.task.TransactionReportDailyGraphCreator;
+import com.dianping.cat.report.page.transaction.task.TransactionReportHourlyGraphCreator;
 import org.junit.Assert;
 import org.junit.Test;
 import org.unidal.helper.Files;
 
-import com.dianping.cat.TestHelper;
-import com.dianping.cat.consumer.transaction.model.entity.TransactionReport;
-import com.dianping.cat.consumer.transaction.model.transform.DefaultSaxParser;
-import com.dianping.cat.consumer.transaction.model.transform.DefaultXmlBuilder;
-import com.dianping.cat.report.page.transaction.task.TransactionReportDailyGraphCreator;
-import com.dianping.cat.report.page.transaction.task.TransactionReportHourlyGraphCreator;
+import java.text.SimpleDateFormat;
 
 public class TransactionReportGraphCreatorTest {
 

@@ -18,25 +18,9 @@
  */
 package com.dianping.cat.build;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.unidal.dal.jdbc.configuration.AbstractJdbcResourceConfigurator;
-import org.unidal.initialization.DefaultModuleManager;
-import org.unidal.initialization.ModuleManager;
-import org.unidal.lookup.configuration.Component;
-
-import com.dianping.cat.Cat;
+import com.dianping.cat.CatConstants;
 import com.dianping.cat.CatHomeModule;
-import com.dianping.cat.build.report.DependencyComponentConfigurator;
-import com.dianping.cat.build.report.EventComponentConfigurator;
-import com.dianping.cat.build.report.HeartbeatComponentConfigurator;
-import com.dianping.cat.build.report.MetricComponentConfigurator;
-import com.dianping.cat.build.report.OfflineComponentConfigurator;
-import com.dianping.cat.build.report.ProblemComponentConfigurator;
-import com.dianping.cat.build.report.ReportComponentConfigurator;
-import com.dianping.cat.build.report.StorageComponentConfigurator;
-import com.dianping.cat.build.report.TransactionComponentConfigurator;
+import com.dianping.cat.build.report.*;
 import com.dianping.cat.helper.JsonBuilder;
 import com.dianping.cat.mvc.PayloadNormalizer;
 import com.dianping.cat.report.HourlyReportContentTableProvider;
@@ -50,19 +34,16 @@ import com.dianping.cat.report.task.DefaultTaskConsumer;
 import com.dianping.cat.report.task.ReportFacade;
 import com.dianping.cat.report.task.cmdb.ProjectUpdateTask;
 import com.dianping.cat.report.task.reload.ReportReloadTask;
-import com.dianping.cat.report.task.reload.impl.BusinessReportReloader;
-import com.dianping.cat.report.task.reload.impl.CrossReportReloader;
-import com.dianping.cat.report.task.reload.impl.DependencyReportReloader;
-import com.dianping.cat.report.task.reload.impl.EventReportReloader;
-import com.dianping.cat.report.task.reload.impl.HeartbeatReportReloader;
-import com.dianping.cat.report.task.reload.impl.MatrixReportReloader;
-import com.dianping.cat.report.task.reload.impl.ProblemReportReloader;
-import com.dianping.cat.report.task.reload.impl.StateReportReloader;
-import com.dianping.cat.report.task.reload.impl.StorageReportReloader;
-import com.dianping.cat.report.task.reload.impl.TopReportReloader;
-import com.dianping.cat.report.task.reload.impl.TransactionReportReloader;
+import com.dianping.cat.report.task.reload.impl.*;
 import com.dianping.cat.system.page.permission.ResourceConfigManager;
 import com.dianping.cat.system.page.permission.UserConfigManager;
+import org.unidal.dal.jdbc.configuration.AbstractJdbcResourceConfigurator;
+import org.unidal.initialization.DefaultModuleManager;
+import org.unidal.initialization.ModuleManager;
+import org.unidal.lookup.configuration.Component;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class ComponentsConfigurator extends AbstractJdbcResourceConfigurator {
 	public static void main(String[] args) {
@@ -131,11 +112,9 @@ public class ComponentsConfigurator extends AbstractJdbcResourceConfigurator {
 
 		all.addAll(new OfflineComponentConfigurator().defineComponents());
 
-		String catHome = Cat.getCatHome();
-		if( catHome.charAt(catHome.length()-1) != '/') {
-			catHome += '/';
-		}
-		all.add(defineJdbcDataSourceConfigurationManagerComponent(catHome+"datasources.xml"));
+		all.add(defineJdbcDataSourceConfigurationManagerComponent("datasources.xml")
+				.config(E("baseDirRef").value("CAT_HOME"))
+				.config(E("defaultBaseDir").value(CatConstants.CAT_HOME_DEFAULT_DIR)));
 
 		all.addAll(new CatDatabaseConfigurator().defineComponents());
 

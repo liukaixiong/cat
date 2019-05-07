@@ -18,16 +18,14 @@
  */
 package com.dianping.cat.report.task.event;
 
-import org.junit.Assert;
-import org.junit.Test;
-import org.unidal.helper.Files;
-
 import com.dianping.cat.TestHelper;
 import com.dianping.cat.consumer.event.EventReportMerger;
 import com.dianping.cat.consumer.event.model.entity.EventReport;
 import com.dianping.cat.consumer.event.model.transform.DefaultSaxParser;
-import com.dianping.cat.consumer.event.model.transform.DefaultXmlBuilder;
 import com.dianping.cat.report.page.event.task.HistoryEventReportMerger;
+import org.junit.Assert;
+import org.junit.Test;
+import org.unidal.helper.Files;
 
 public class HistoryEventMergerTest {
 	@Test

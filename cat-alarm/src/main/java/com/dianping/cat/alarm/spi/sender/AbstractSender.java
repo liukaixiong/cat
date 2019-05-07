@@ -155,6 +155,8 @@ public abstract class AbstractSender implements Sender, LogEnabled {
 
     private class AlertSendException extends Exception {
 
+      private static final long serialVersionUID = 1L;
+
     }
 
 }
