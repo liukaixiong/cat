@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<config mode="client" xmlns:xsi="http://www.w3.org/2001/XMLSchema">
+    <servers>
+        <!-- <server ip="192.168.0.90" port="2280" http-port="2281" /> -->
+		<server ip="127.0.0.1" port="2280" http-port="2281" />
+    </servers>
+</config>
+
